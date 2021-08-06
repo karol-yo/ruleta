@@ -11,22 +11,42 @@ namespace ConsoleApp1
     {
         public int Balance  { get; set; }
         public string Name  { get; set; }
+        /*public Guid Id { get; set; }
+        public static int ProfileCounter { get; set; }
+        public static void FirstOpen()
+        {
+            string Path = Directory.GetCurrentDirectory();
+            if (File.Exists(Path + @"Users.json"))
+            {
+                Console.WriteLine("podaj nazwe profilu ");
+                string Nickname = Console.ReadLine();
+                Guid GuidId = Guid.NewGuid();
+                ProfileCounter++;
+                User user = new()
+                {
+                    Name = Nickname,
+                    Balance = 1000,
+                    Id = GuidId
+                };
+
+            }
+        }*/
         public static int NumberOfProfiles()
         {
             string path = Directory.GetCurrentDirectory();
-            int amountPlusOne = 1;
+            int Amount = 0;
             while (true)
             {
-                if (File.Exists(path + @"user"+ amountPlusOne + ".json") == true)
+                if (File.Exists(path + @"Users\user"+ Amount + ".json") == true)
                 {
-                    amountPlusOne += 1;
+                    Amount += 1;
                 }
                 else
                 {
                     break;
                 }
             }
-            return amountPlusOne - 1;
+            return Amount;
         }
         public static void CreateProfile()
         {
@@ -39,7 +59,38 @@ namespace ConsoleApp1
             };
             string userSerialized = JsonConvert.SerializeObject(user);
             string path = Directory.GetCurrentDirectory();
-            File.WriteAllText(path + @"user" + NumberOfProfiles() + ".json", userSerialized);
+            File.WriteAllText(path + @"Users\user" + NumberOfProfiles() + ".json", userSerialized);
+        }
+        public static void DeleteProfile(int whichOne)
+        {
+            string path = Directory.GetCurrentDirectory();
+            int numberOfProfiles = NumberOfProfiles();
+            File.Delete(path + @"Users\user" + (whichOne - 1) + ".json");
+            if (whichOne < numberOfProfiles)
+            {
+                for (int x = whichOne; x != numberOfProfiles; x++)
+                {
+                    File.Move(path + @"Users\user" + x + ".json", path + @"Users\user" + (x - 1) + ".json");
+                }
+            }
+        }
+        public static int ChooseProfile()
+        {
+            Console.WriteLine("wybierz profil, stworz nowy lub usun istniejacy ");
+            int numberOfProfiles = NumberOfProfiles();
+            ListOfProfiles();
+            Console.WriteLine("[" + (numberOfProfiles + 1) + "] Stworz nowy profil");
+            Console.WriteLine("[" + (numberOfProfiles + 2) + "] Usun istniejacy profil ");
+            int choice = Convert.ToInt32(Console.ReadLine());
+            if (choice > 0 & choice <= (numberOfProfiles + 2))
+            {
+                return choice;
+            }
+            else
+            {
+                Console.WriteLine("error");
+                return -1;
+            }
         }
         /*public static string FirstOpen()
         {
@@ -65,20 +116,25 @@ namespace ConsoleApp1
         public static string GetName(int whichOne)
         {
             string path = Directory.GetCurrentDirectory();
-            string userSerialized = File.ReadAllText(path + @"user" + whichOne + ".json");
+            string userSerialized = File.ReadAllText(path + @"Users\user" + whichOne + ".json");
             User userDeserialized = JsonConvert.DeserializeObject<User>(userSerialized);
             return userDeserialized.Name;
         }
         public static int GetBalance(int whichOne)
         {
             string path = Directory.GetCurrentDirectory();
-            string userSerialized = File.ReadAllText(path + @"user" + whichOne + ".json");
+            string userSerialized = File.ReadAllText(path + @"Users\user" + (whichOne) + ".json");
             User userDeserialized = JsonConvert.DeserializeObject<User>(userSerialized);
             return userDeserialized.Balance;
         }
-        public static string ListOfProfiles()                   //TO WLASNIE TERAZ PISZE
+        public static void ListOfProfiles()
         {
-
+            Console.WriteLine("lista wszystkich profilow: ");
+            int numberOfProfiles = NumberOfProfiles();
+            for (int userIndex = 0; userIndex < numberOfProfiles; userIndex++)
+            {
+                Console.WriteLine("[" + (userIndex + 1) + "] " + GetName(userIndex));
+            }
         }
         /*public static int Choice()                                                TUTAJ JAKIS SYF CO GO NIE POWINNO BYC W TEJ KLASIE
         {                                                                              TEZ PROTOTYPY CHYBA JAKIES W MIARE TAKIE

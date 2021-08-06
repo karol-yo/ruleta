@@ -9,26 +9,14 @@ namespace ConsoleApp1
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Witaj w kasynie!");
-            if (User.NumberOfProfiles() == 0)
+            Initializing.FolderCheck();
+            Console.WriteLine("ruleta siema");
+            while (true)
             {
-                Console.WriteLine("nie znaleziono zadnego profilu, musisz stworzyc nowy");
-                User.CreateProfile();
+                int whosPlaying = Game.FirstLobby();
+                Game.SecondLobby(whosPlaying);
+                Table.NewTable(whosPlaying);
             }
-
-            /*if (User.FirstOpen() == "1st")
-            {
-                Console.WriteLine("zapraszamy po raz pierwszy, " + User.GetName());
-            }
-            else if (User.FirstOpen() == "not1st")
-            {
-                Console.WriteLine("zapraszamy ponownie, " + User.GetName());
-            }
-            else
-            {
-                Console.WriteLine("error");
-            }
-            Console.WriteLine("liczba profili wynosi " + User.NumberOfProfiles());*/
         }
     }
 }
